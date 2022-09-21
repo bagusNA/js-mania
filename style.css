@@ -28,10 +28,10 @@ body {
 }
 
 header, footer {
-    padding: 4rem 0;
+    padding: 2rem 0;
 }
 
-header h1, footer {
+header, footer {
     text-align: center;
 }
 
@@ -43,7 +43,7 @@ main {
 }
 
 #game {
-    background-color: var(--primary);
+    background-color: var(--secondary);
     border-radius: 5px;
     border: solid 2px white;
 }
