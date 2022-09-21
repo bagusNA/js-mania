@@ -1,0 +1,49 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+:root {
+    --primary: #ADEFD1;
+    --secondary: #00203F;
+}
+
+body {
+    font-family: 'Lato', sans-serif;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-width: 100vw;
+    background-color: var(--secondary);
+    color: var(--primary);
+}
+
+header, footer {
+    padding: 4rem 0;
+}
+
+header h1, footer {
+    text-align: center;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+}
+
+#game {
+    background-color: var(--primary);
+    border-radius: 5px;
+    border: solid 2px white;
+}
