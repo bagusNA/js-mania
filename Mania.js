@@ -9,17 +9,12 @@ class Mania {
     buttonHeight = 100;
     scoreZoneHeight = 125;
     noteHeight = 25;
-    noteSpeed = 8;
-    notes = [
-        {
-            lane: 1,
-            y: 0,
-        }
-    ];
-    
+    noteSpeed = 12;
+    notes = [];
+
+    isGameRunning = true;
     isKeyHasPressedNote = false;
-    pressedKey = [];
-    songBpm = 180;
+    songBpm = 200 * 2;
     score = 0;
     miss = 0;
 
@@ -37,7 +32,7 @@ class Mania {
 
         this.laneCenter = this.findCenter();
         this.pureLaneWidth = this.laneWidth - (this.borderSize * 2);
-        
+
         this.scoreElement = scoreElement;
         this.missElement = missElement;
 
@@ -51,6 +46,8 @@ class Mania {
 
     draw() {
         requestAnimationFrame(() => this.draw());
+
+        if (!this.isGameRunning) return;
 
         this.ctx.clearRect(0, 0, this.width, this.width);
 
@@ -77,7 +74,7 @@ class Mania {
                 this.pureLaneWidth,
                 this.height
             );
-            
+
             // Draw borders
             this.ctx.fillStyle = this.borderColor;
             this.ctx.fillRect(xPos, 0, this.borderSize, this.height);
@@ -94,10 +91,20 @@ class Mania {
         this.lanes.forEach((lane, index) => {
             this.ctx.fillStyle = lane.isPressed ? this.activeButtonColor : this.buttonColor;
             this.ctx.fillRect(
-                this.getLaneXPos(index + 1), 
+                this.getLaneXPos(index + 1),
                 this.height - this.buttonHeight,
                 this.pureLaneWidth,
                 this.buttonHeight
+            );
+
+            const fontOffset = 12;
+
+            this.ctx.font = '32px Lato';
+            this.ctx.fillStyle = this.noteColor;
+            this.ctx.fillText(
+                lane.key.toUpperCase(),
+                this.getLaneXPos(index + 1) + this.pureLaneWidth / 2 - fontOffset,
+                this.height - (this.buttonHeight / 2) + fontOffset,
             );
         });
     }
@@ -106,8 +113,7 @@ class Mania {
         this.ctx.fillStyle = this.noteColor;
 
         this.notes.forEach((note, index) => {
-            // I don't even know why but we need offset to avoid note vertical jitter
-            if (note.y > this.height) {
+            if (note.y > this.height - this.buttonHeight + 20) {
                 this.notes.splice(index, 1);
                 this.increaseMiss();
                 return;
@@ -168,22 +174,37 @@ class Mania {
     }
 
     generateNote() {
-        setInterval(() =>
+        setInterval(() => {
+            if (!this.isGameRunning) return;
+
             this.notes.push({
                 lane: this.randomInt(1, this.lanes.length),
-                y: 0
+                y: -this.noteHeight
             })
-        , 1000 * 60 / this.songBpm);
+        }, 1000 * 60 / this.songBpm);
     }
 
     increaseScore() {
-        this.score++;
+        this.score += 300;
         this.scoreElement.innerHTML = this.score.toString();
     }
 
     increaseMiss() {
         this.miss++;
         this.missElement.innerHTML = this.miss.toString();
+    }
+
+    // Toggle states
+    pause() {
+        this.isGameRunning = false;
+    }
+
+    resume() {
+        this.isGameRunning = true;
+    }
+
+    togglePause() {
+        this.isGameRunning = !this.isGameRunning;
     }
 
     // Utilities

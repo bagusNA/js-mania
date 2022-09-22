@@ -19,6 +19,7 @@ body {
 }
 
 .wrapper {
+    position: relative;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -46,4 +47,33 @@ main {
     background-color: var(--secondary);
     border-radius: 5px;
     border: solid 2px white;
+}
+
+#pause-popup {
+    display: none;
+    width: 20vw;
+    background-color: var(--primary);
+    color: var(--secondary);
+    border-radius: 5px;
+    border: 3px solid white;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#pause-popup > * {
+    padding: 2rem 0;
+    font-size: 1.5rem;
+    text-align: center;
+    text-transform: uppercase;
+    transition: 100ms ease-in;
+}
+
+#pause-popup > *:hover {
+    color: var(--primary);
+    background-color: var(--secondary);
+    cursor: pointer;
+    letter-spacing: 4px;
 }
