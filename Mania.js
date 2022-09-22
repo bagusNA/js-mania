@@ -113,9 +113,14 @@ class Mania {
         this.ctx.fillStyle = this.noteColor;
 
         this.notes.forEach((note, index) => {
-            if (note.y > this.height - this.buttonHeight + 20) {
-                this.notes.splice(index, 1);
+            if (note.y > this.height - this.noteHeight && !note.isMiss) {
+                note.isMiss = true;
                 this.increaseMiss();
+            }
+
+            // I don't even know why, but we need Y offset to avoid vertical note jitter
+            if (note.y > this.height + 50) {
+                this.notes.splice(index, 1);
                 return;
             }
 
@@ -179,7 +184,8 @@ class Mania {
 
             this.notes.push({
                 lane: this.randomInt(1, this.lanes.length),
-                y: -this.noteHeight
+                y: -this.noteHeight,
+                isMiss: false,
             })
         }, 1000 * 60 / this.songBpm);
     }
