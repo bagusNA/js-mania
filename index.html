@@ -17,6 +17,7 @@
             <div>
                 <p>Score: <span id="score">0</span></p>
                 <p>Miss: <span id="miss">0</span></p>
+                <p>Time: <span id="time">0</span></p>
             </div>
         </header>
         <main>
@@ -28,7 +29,22 @@
 
         <div id="pause-popup">
             <div id="resume-button">Resume</div>
-            <div id="restart-button">Restart</div>
+            <div class="restart-button">Restart</div>
+        </div>
+
+        <div id="gameover-popup">
+            <h1>Game Over</h1>
+            <div class="leaderboard-wrapper">
+                <h2>Leaderboard</h2>
+                <div id="leaderboard">
+                    <div class="leaderboard__item header">
+                        <span class="score-number">No.</span>
+                        <span class="score-name">Name</span>
+                        <span class="score-value">Score</span>
+                    </div>
+                </div>
+            </div>
+            <div class="restart-button">Restart</div>
         </div>
     </div>
 </body>

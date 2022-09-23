@@ -9,18 +9,29 @@ class Mania {
     buttonHeight = 100;
     scoreZoneHeight = 125;
     noteHeight = 25;
-    noteSpeed = 12;
+    noteSpeed = 14;
     notes = [];
 
     isGameRunning = true;
+    isGameOver = false;
     isKeyHasPressedNote = false;
-    songBpm = 200 * 2;
+
+    songBpm = 220 * 2;
+    songLength = 15;
+
     score = 0;
     miss = 0;
 
+    startTime = Date.now();
+    currentTime;
+
+    playerName = 'Rahmat';
+
+    animationFrameId;
+
     // TODO: add some songs
 
-    constructor({canvas, width, height, laneWidth, lanes, scoreElement, missElement}) {
+    constructor({canvas, width, height, laneWidth, lanes, scoreElement, missElement, timeElement, onGameOver}) {
         this.canvas = canvas;
         this.ctx = this.canvas.getContext('2d');
         this.width = width;
@@ -35,6 +46,9 @@ class Mania {
 
         this.scoreElement = scoreElement;
         this.missElement = missElement;
+        this.timeElement = timeElement;
+
+        this.onGameOver = onGameOver;
 
         this.setup();
     }
@@ -45,15 +59,26 @@ class Mania {
     }
 
     draw() {
-        requestAnimationFrame(() => this.draw());
+        this.animationFrameId = requestAnimationFrame(() => this.draw());
 
         if (!this.isGameRunning) return;
+
+        if (this.currentTime >= this.songLength * 1000) {
+            cancelAnimationFrame(this.animationFrameId);
+            this.isGameOver = true;
+            this.isGameRunning = false;
+
+            this.saveScore();
+            this.onGameOver();
+        }
 
         this.ctx.clearRect(0, 0, this.width, this.width);
 
         this.drawLanes();
         this.drawNotes();
         this.drawButtons();
+
+        this.updateTime();
     }
 
     main() {
@@ -97,7 +122,7 @@ class Mania {
                 this.buttonHeight
             );
 
-            const fontOffset = 12;
+            const fontOffset = 9;
 
             this.ctx.font = '32px Lato';
             this.ctx.fillStyle = this.noteColor;
@@ -200,17 +225,48 @@ class Mania {
         this.missElement.innerHTML = this.miss.toString();
     }
 
+    updateTime() {
+        this.currentTime = Date.now() - this.startTime;
+        this.timeElement.innerHTML = this.formatMs(this.currentTime);
+    }
+
     // Toggle states
     pause() {
+        if (this.isGameOver) return;
+
         this.isGameRunning = false;
     }
 
     resume() {
+        if (this.isGameOver) return;
+
         this.isGameRunning = true;
     }
 
     togglePause() {
         this.isGameRunning = !this.isGameRunning;
+    }
+
+    getScores() {
+        return JSON.parse(localStorage.getItem('scores'));
+    }
+    saveScore() {
+        const localScores = this.getScores();
+        const score = {
+            name: this.playerName,
+            score: this.score,
+        }
+
+        console.log(localScores)
+
+        if (!localScores) {
+            localStorage.setItem('scores', JSON.stringify([score]));
+            return;
+        }
+
+        localScores.push(score);
+        localScores.sort((scoreA, scoreB) => scoreB.score - scoreA.score);
+        localStorage.setItem('scores', JSON.stringify(localScores));
     }
 
     // Utilities
@@ -224,6 +280,22 @@ class Mania {
 
     randomInt(min, max) {
         return Math.floor(Math.random() * max) + min;
+    }
+
+    formatMs(msParam) {
+        const ms = msParam % 1000;
+
+        msParam = (msParam - ms) / 1000;
+        const sec = msParam % 100;
+
+        msParam = (msParam - sec) / 60;
+        const min = msParam % 60;
+
+        const msStr = ms.toString().padStart(3, '0');
+        const secStr = sec.toString().padStart(2, '0');
+        const minStr = min.toString().padStart(2, '0');
+
+        return `${minStr}:${secStr}:${msStr}`;
     }
 }
 

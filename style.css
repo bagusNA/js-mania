@@ -49,21 +49,47 @@ main {
     border: solid 2px white;
 }
 
-#pause-popup {
+#pause-popup, #gameover-popup {
     display: none;
-    width: 20vw;
-    background-color: var(--primary);
-    color: var(--secondary);
-    border-radius: 5px;
-    border: 3px solid white;
-
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    min-width: 30vw;
+    background-color: var(--primary);
+    color: var(--secondary);
+    border-radius: 5px;
+    border: 3px solid white;
 }
 
-#pause-popup > * {
+#gameover-popup {
+    text-align: center;
+}
+
+#gameover-popup h1 {
+    padding: 1rem 0;
+    text-transform: uppercase;
+    border-bottom: 4px solid var(--secondary);
+}
+
+.leaderboard-wrapper {
+    padding: 0 1rem 1rem;
+}
+
+.leaderboard-wrapper h2 {
+    padding: 1rem 0;
+}
+
+.leaderboard__item {
+    display: grid;
+    grid-template-columns: 1fr 4fr 3fr;
+}
+
+.leaderboard__item.header {
+    font-weight: bold;
+}
+
+#pause-popup > *, .restart-button {
     padding: 2rem 0;
     font-size: 1.5rem;
     text-align: center;
@@ -71,7 +97,7 @@ main {
     transition: 100ms ease-in;
 }
 
-#pause-popup > *:hover {
+#pause-popup > *:hover, .restart-button:hover {
     color: var(--primary);
     background-color: var(--secondary);
     cursor: pointer;
