@@ -65,11 +65,9 @@ class Mania {
 
         if (this.currentTime >= this.songLength * 1000) {
             cancelAnimationFrame(this.animationFrameId);
-            this.isGameOver = true;
-            this.isGameRunning = false;
+            this.gameOverActions();
 
-            this.saveScore();
-            this.onGameOver();
+            return;
         }
 
         this.ctx.clearRect(0, 0, this.width, this.width);
@@ -160,6 +158,14 @@ class Mania {
         });
     }
 
+    gameOverActions() {
+        this.isGameOver = true;
+        this.isGameRunning = false;
+
+        this.saveScore();
+        this.onGameOver();
+    }
+
     // This includes scoring judgements
     setupControls() {
         document.addEventListener('keydown', pressedKey => {
@@ -169,14 +175,13 @@ class Mania {
                 const note = this.notes[0];
 
                 // Prevents error if there's no note
-                if (!note) return;
-
-                if (lane.key !== key) return;
+                if (!note || lane.key !== key) return;
 
                 lane.isPressed = true;
 
                 if (
                     !this.isKeyHasPressedNote &&
+                    this.isGameRunning &&
                     note.lane === laneIndex + 1 &&
                     note.y <= this.height
                 ) {
@@ -256,8 +261,6 @@ class Mania {
             name: this.playerName,
             score: this.score,
         }
-
-        console.log(localScores)
 
         if (!localScores) {
             localStorage.setItem('scores', JSON.stringify([score]));
