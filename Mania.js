@@ -12,20 +12,21 @@ class Mania {
     noteSpeed = 14;
     notes = [];
 
-    isGameRunning = true;
+    isGameStarted = false;
+    isGameRunning = false;
     isGameOver = false;
     isKeyHasPressedNote = false;
-
-    songBpm = 220 * 2;
-    songLength = 15;
 
     score = 0;
     miss = 0;
 
-    startTime = Date.now();
+    song;
+    songBpm;
+
+    startTime;
     currentTime;
 
-    playerName = 'Rahmat';
+    playerName;
 
     animationFrameId;
 
@@ -63,7 +64,10 @@ class Mania {
 
         if (!this.isGameRunning) return;
 
-        if (this.currentTime >= this.songLength * 1000) {
+        if (this.isGameStarted && !this.startTime)
+            this.startTime = Date.now();
+
+        if (this.song.ended) {
             cancelAnimationFrame(this.animationFrameId);
             this.gameOverActions();
 
@@ -81,7 +85,7 @@ class Mania {
 
     main() {
         this.setupControls();
-        this.generateNote();
+        // this.generateNote();
 
         this.draw();
     }
@@ -161,6 +165,7 @@ class Mania {
     gameOverActions() {
         this.isGameOver = true;
         this.isGameRunning = false;
+        this.song.pause();
 
         this.saveScore();
         this.onGameOver();
@@ -236,16 +241,31 @@ class Mania {
     }
 
     // Toggle states
+    start(name, song, bpm) {
+        this.playerName = name;
+        this.song = new Audio(URL.createObjectURL(song));
+        this.songBpm = bpm;
+
+        this.isGameStarted = true;
+        this.isGameRunning = true;
+        this.song.play();
+
+        this.generateNote();
+    }
+
     pause() {
         if (this.isGameOver) return;
 
         this.isGameRunning = false;
+        this.song.pause();
     }
 
     resume() {
         if (this.isGameOver) return;
 
         this.isGameRunning = true;
+        this.song.play();
+
     }
 
     togglePause() {
@@ -255,6 +275,7 @@ class Mania {
     getScores() {
         return JSON.parse(localStorage.getItem('scores'));
     }
+
     saveScore() {
         const localScores = this.getScores();
         const score = {

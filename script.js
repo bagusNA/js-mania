@@ -4,11 +4,13 @@ const gameCanvas = document.getElementById('game');
 const scoreEl = document.getElementById('score');
 const missEl = document.getElementById('miss');
 const timeEl = document.getElementById('time');
-const gameOverPopup = document.getElementById('gameover-popup');
 const leaderboard = document.getElementById('leaderboard');
+const startPopup = document.getElementById('start-popup');
+const gameOverPopup = document.getElementById('gameover-popup');
 const pausePopup = document.getElementById('pause-popup');
+const startButton = document.getElementById('btn-start')
 const resumeButton = pausePopup.children[0];
-const restartButtons = document.querySelectorAll('.restart-button');
+const restartButtons = document.querySelectorAll('.btn-restart');
 
 const mania = new Mania({
     canvas: gameCanvas,
@@ -49,6 +51,16 @@ function onGameOver() {
     gameOverPopup.style.display = 'block';
 }
 
+const startGame = () => {
+    const name = document.getElementById('name').value;
+    const song = document.getElementById('song').files[0];
+    const bpm = document.getElementById('bpm').value;
+
+    startPopup.style.display = 'none';
+
+    mania.start(name, song, bpm);
+}
+
 const pauseGame = () => {
     if (!mania.isGameRunning) return;
 
@@ -78,6 +90,8 @@ document.addEventListener('keydown', pressedKey => {
     if (pressedKey.key === "`")
         restartGame();
 });
+
+startButton.addEventListener('click', () => startGame());
 
 resumeButton.addEventListener('click', () => resumeGame());
 
