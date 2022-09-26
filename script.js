@@ -97,6 +97,12 @@ resumeButton.addEventListener('click', () => resumeGame());
 
 restartButtons.forEach(button => {
     button.addEventListener('click', () => restartGame());
-})
+});
+
+document.addEventListener('visibilitychange', () => {
+   if (document.visibilityState !== 'hidden') return;
+
+   pauseGame();
+});
 
 mania.main();
